@@ -1,0 +1,163 @@
+from django.contrib import admin
+from .models import *
+
+# Register your models here.
+#2.Change site title
+    #header
+        admin.site.site_header = "Admin Panel"
+    #site-title
+        admin.site.site_title="Admin Dashboard"
+
+class CourseAdmin(admin.ModelAdmin):
+    #List_display takes tuple -- grid view 
+        list_display=("title","publish_date","author")
+    
+    #Change field to open detail page
+        #Now detail page open from author instead of title
+            list_display_links=("author",)
+    
+    #Only want to show selected fields and can change order of fields-- in add course
+        fields=("title","publish_date","author","price","status")
+    
+    
+    #Show two fields together
+        def full_title(self,obj):
+            return f"{obj.status}_{obj.price}"
+    #when use short_description
+        full_title.short_description = "Status_Price"
+    
+    #instead of short_description
+        @admin.display(description="Status_Price") 
+        def full_title(self,obj):
+            return f"{obj.status}_{obj.price}"
+    
+    #XandRightTrickMark -- using boolean
+        @admin.display(boolean=True,description="Status_Price") #instead of short_description
+        def full_title(self,obj):
+            return True
+    
+    
+    #when use the full_title
+        list_display=("title","publish_date","author","full_title")
+    
+    #directly use model method
+        list_display=("title","publish_date","author","full_title","capital")
+   
+     #edit fields on main page or grid view 
+    #-- field shouldn't be shown in list_display_links but in list_display
+        list_editable=("price",) 
+    
+    #filter the list at side right of page
+        list_filter=("title") or  list_filter=["title"] 
+    
+    # search Field
+        search_fields=("author",)
+        search_fields=("author_startwith","price_gte")
+    
+    #exclude -- stop showing the fields of model
+        exclude = ('description',)
+    
+    #combine fields like publish_Date and price in a row or placed together
+        fields=(("title","price"),"publish_date","author","status")
+    
+    
+    #Groups or blue line bar with title and collapse to hide the tab and its field
+    #description to show details of fields and description shows below the title
+        fieldsets=(('Book Details',{
+                'fields':('title','author','description')
+            }),('Book Extra Info',{
+                'classes':('collapse','wide'),
+                'fields':('price','status','publish_date'),
+                'description':"Book's extra info."
+            }))
+    
+   
+
+    #Note:
+        Every field can be tuple or list
+    
+
+#1. 2nd way to register Admin Function on panel
+@admin.register(Lesson)
+class LessonAdmin(admin.ModelAdmin):
+    pass
+    
+    
+#1. Registered Model and Admin Function to show on panel 
+admin.site.register(Course,CourseAdmin)
+# admin.site.register(Lesson)
+
+#searchname and autocomplete field
+    autocomplete_fields=("Course",) 
+
+#search data for large data
+    raw_id_fields=("Course",)
+
+#Order data if superuser
+    def get_ordering(self,request):
+        if request.user.is_superuser:
+            return ('title',)
+        else:
+            return ('price',)
+
+#Load Json data
+    python manage.py loaddata json_name
+
+#ordering -:descending +:increasing
+    ordering = ("-first_name","+last_name")
+
+#read fields only show no change
+    readonly_fields=('status',)
+
+#Stop delete from Lesson
+    can_delete = false
+
+#Change the blue bar title in Lesson
+    verbose_name_plural ="Lesson's details"
+
+#count in model
+    count = 2ndModel.1stModelInstance_set.count()
+    #The reverse relationship is named using the lowercase name of the model followed by _set.
+
+#Url for open model using field set value
+    url = (
+            reverse('admin:appname_openModelInstance_changelist')+"?"+urlencode({"courses__id":f"{obj.id}"}))
+    #the "changelist" is the view that lists all instances of a particular model. It's the list view where you can see all records of the Person model, usually with options to add, edit, and delete instances.
+    # the add - to directly on add 
+        reverse('admin:panel_person_add')+"?"+urlencode({"courses__id":f"{obj.id}"})
+    #courses__id,last_name_startwith-->f"s"
+
+#Label in from
+    def get_form(self, request, obj, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields["first_name"].label = "First Name"
+        return form
+
+#Validation Error
+    class  PersonAdminForm(forms.ModelForm):
+        class Meta:
+            model = Person
+            fields = "__all__"
+        def clean_first_name(self):
+            if self.cleaned_data['first_name'] =="Spike":
+                raise forms.ValidationError("Only Name")
+            return self.cleaned_data["first_name"]
+#---------------------------- Model ---------------------------#
+
+ #capital of title or any other field
+    def capital(self):
+        return self.title.upper()
+
+#This shows name instead of course object in Lesson Model
+def __str__(self):
+        return self.title 
+
+#See another model in first model StackedInline
+    class LessonInline(admin.StackedInline):
+        model = Lesson
+        extra = 1 #show column in page
+
+#See another model in first model tabular
+    class LessonTabular(admin.TabularInline):
+        model = Lesson
+        max_num = 5 #max column in page

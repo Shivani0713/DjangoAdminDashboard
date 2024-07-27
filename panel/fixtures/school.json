@@ -1,0 +1,54 @@
+[
+    {
+        "model": "panel.person",
+        "pk": 1,
+        "fields": {
+            "last_name": "Harris",
+            "first_name": "Albert",
+            "course": [1]
+        }
+    },
+    {
+        "model": "panel.person",
+        "pk": 2,
+        "fields": {
+            "last_name": "Rosenberg",
+            "first_name": "Willow",
+            "course": [1, 2]
+        }
+    },
+    {
+        "model": "panel.schoolcourse",
+        "pk": 1,
+        "fields": {
+            "name": "Physics",
+            "year": 2000
+        }
+    },
+    {
+        "model": "panel.schoolcourse",
+        "pk": 2,
+        "fields": {
+            "name": "Chemistry",
+            "year": 2010
+        }
+    },
+    {
+        "model": "panel.schoolgrade",
+        "pk": 1,
+        "fields": {
+            "student": 1,
+            "grade": 68,
+            "course": 1
+        }
+    },
+    {
+        "model": "panel.schoolgrade",
+        "pk": 2,
+        "fields": {
+            "student": 2,
+            "grade": 87,
+            "course": 2
+        }
+    }
+]
