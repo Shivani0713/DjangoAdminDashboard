@@ -26,6 +26,10 @@ SECRET_KEY = 'django-insecure-usad&^_*=#*-hni^nu0&+xrr%p=l0*uxkk=1jz7gcv1b&^y4-b
 DEBUG = True
 
 ALLOWED_HOSTS = ['djangoadmindashboard.onrender.com']
+CSRF_TRUSTED_ORIGINS = [
+    'https://djangoadmindashboard.onrender.com'
+]
+
 
 
 # Application definition
