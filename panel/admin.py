@@ -99,4 +99,3 @@ class SchoolCourseAdmin(admin.ModelAdmin):
 @admin.register(SchoolGrade)
 class SchoolGradeAdmin(admin.ModelAdmin):
     pass
-
